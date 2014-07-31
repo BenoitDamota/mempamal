@@ -8,9 +8,9 @@ import os.path as path
 import numpy as np
 
 def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
-                    mapper="./generic_mapper.py",
-                    i_red="./generic_inner_reducer.py",
-                    o_red="./generic_outer_reducer.py",
+                    mapper="./scripts/mapper.py",
+                    i_red="./scripts/inner_reducer.py",
+                    o_red="./scripts/outer_reducer.py",
                     verbose=False):
     # retrieve I/O directory
     in_out_dir = data_cfg["in_out_dir"]
@@ -27,8 +27,8 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
 
     # number of folds
     n_o = folds_dic["n_outer"]
-    if cv_cfg["modelSelection"]:
-        n_i = folds_dic["n_inner"]
+    n_i = folds_dic["n_inner"] if cv_cfg["modelSelection"] else None
+        
 
     # a workflow is a collection of commands and dependancies
     all_cmd = {}
