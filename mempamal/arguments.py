@@ -2,7 +2,7 @@
 #
 # License: BSD 3 clause
 """
-Build arguments parser for Map and Reduce programs.
+Build arguments parser for the scripts (mapper, reducers and command builder).
 """
 import argparse
 

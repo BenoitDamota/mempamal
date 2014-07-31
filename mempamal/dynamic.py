@@ -3,26 +3,46 @@
 # License: BSD 3 clause
 
 def dynamic_import(str_import):
+    """Take a string representing a python function or class and import it.
+
+    Parameters:
+    -----------
+    str_import : str
+        the string representing the import (e.g. "sklearn.metrics.f1_score")
+    """
     mod, cla = str_import.rsplit('.', 1)
     dyn_import = getattr(__import__(mod, fromlist=[str(cla)]), cla)
     return dyn_import
     
-def get_step(step):
+def _get_step(step):
+    """Import class of a given step and return a sklearn.pipeline.Pipeline step
+    """
     str_imp = step[1][0]
     kwargs = step[1][1]
     name = step[0]
     return (name, (dynamic_import(str_imp), kwargs))
 
 def construct_pipeline(cfg):
+    """Construct the pipeline steps for sklearn.pipeline.Pipeline.
+    
+    Construct the pipeline steps for sklearn.pipeline.Pipeline and
+    return the steps and the parameter to optimize (e.g. "logit__C" for
+    the parameter "C" of the step named "logit").
+
+    Parameters:
+    -----------
+    cfg : dict,
+        method configuration describing the steps of an pipelined estimator
+    """
     steps = cfg["steps"]
     est_param = cfg["est_param"]
     pipe = []
     for step in steps:
-        pipe.append(get_step(step))
+        pipe.append(_get_step(step))
     return {'steps': pipe}, est_param
 
 def get_score_func(cfg, cv="crossval_score"):
-    """Load the score function from the CV configuration.
+    """Import score function and kwargs from the CV configuration.
 
     Parameters
     ----------
@@ -44,10 +64,8 @@ def load_data(cfg):
     cfg : dict,
         configuration dict for data and I/O.
     """
-    func = cfg['func']
     kwargs = cfg['kwargs']
-    mod, cla = func.rsplit('.', 1)
-    dyn_func = getattr(__import__(mod, fromlist=[str(cla)]), cla)
+    dyn_func = dynamic_import(cfg['func'])
     x, y = dyn_func(**kwargs)
     return x, y
 
@@ -60,12 +78,11 @@ def get_grid(cfg, x, y):
         configuration dict for cross-validation.
     x : array, shape (n_samples, n_features)
         features array
-    y : array, shape (n_samples, n_features)
+    y : array, shape (n_samples, n_targets)
+        targets array
     """
-    func = cfg["gridSearch"]['parametersGrid'][0]
     kwargs = cfg["gridSearch"]['parametersGrid'][1]
-    mod, cla = func.rsplit('.', 1)
-    dyn_func = getattr(__import__(mod, fromlist=[str(cla)]), cla)
+    dyn_func = dynamic_import(cfg["gridSearch"]['parametersGrid'][0])
     grid = dyn_func(x, y, **kwargs)
     return grid
 
