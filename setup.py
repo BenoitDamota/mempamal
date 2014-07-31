@@ -11,6 +11,6 @@ setup(
     description="MEMPAMAL: Means for EMbarrassingly PArallel MAchine Learning",
     author="Benoit Da Mota",
     author_email="damota.benoit@gmail.com",
-    packages=["mempamal", "mempamal.datasets"],
+    packages=["mempamal", "mempamal.datasets", "mempamal.scripts"],
     long_description="""A set of python helpers to produce and run embarrassingly parallel machine learning workflows""",
     classifiers=[])

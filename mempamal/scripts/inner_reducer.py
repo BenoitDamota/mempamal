@@ -13,7 +13,7 @@ from sklearn.pipeline import Pipeline
 
 from mempamal.arguments import get_ired_argparser
 from mempamal.crossval import get_fold, print_fold
-from mempamal.generic_gridsearch import GenericGridSearch
+from mempamal.gridsearch import GenericGridSearch
 from mempamal.dynamic import construct_pipeline, get_score_func
 
 verbose = False

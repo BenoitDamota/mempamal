@@ -9,6 +9,7 @@ import os
 import json
 import warnings
 
+import numpy as np
 import sklearn.externals.joblib as joblib
 
 from mempamal.crossval import make_folds
