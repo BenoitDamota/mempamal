@@ -2,7 +2,6 @@
 # Author: Benoit Da Mota <damota.benoit@gmail.com>
 #
 # License: BSD 3 clause
-import os
 import setuptools
 
 setuptools.setup(
@@ -14,8 +13,8 @@ setuptools.setup(
     license='BSD 3-clause',
     url='https://github.com/BenoitDamota/mempamal',
     packages=["mempamal", "mempamal.datasets", "mempamal.scripts"],
-    long_description=open(os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), 'README.md')).read(),
+    long_description="""A set of python helpers to produce and run
+    embarrassingly parallel machine learning workflows""",
     install_requires=['numpy', 'scikit-learn'],
     classifiers=[
         'Development Status :: 3 - Alpha',

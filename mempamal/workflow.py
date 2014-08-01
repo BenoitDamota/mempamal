@@ -13,6 +13,10 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
                     i_red="./scripts/inner_reducer.py",
                     o_red="./scripts/outer_reducer.py",
                     verbose=False):
+    """Create a workflow (list of commands and dependancies).
+
+    Note: internal function (see create_wf)
+    """
     # retrieve I/O directory
     in_out_dir = data_cfg["in_out_dir"]
 
@@ -31,7 +35,7 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
 
     # a workflow is a collection of commands and dependancies
     all_cmd = {}
-    # dependancies are tuples (cmd_A, cmd_B) stored in a dict
+    # dependancies are tuples (cmd_nameA, cmd_nameB) stored in a dict
     # with cmd_B that waits for cmd_A completion
     dependancies = []
     name_ired = "|--- Inner reduce outer={}"
@@ -74,6 +78,26 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
 
 
 def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
+    """Create a workflow (list of commands and dependancies).
+
+    the list of commands returned is a dictionnary which associates a
+    job name and a command. A command is a list of strings. Dependancies
+    are a list of tuples (cmd_nameA, cmd_nameB) where cmd_B waits for
+    cmd_A completion.
+
+    Parameters:
+    -----------
+    folds_dic : dict,
+       The dictionnary with all the folds.
+    cv_cfg : dict,
+       Configuration for cross-validation.
+    data_cfg : dict,
+       Configuration for the data and I/O.
+    method_cfg : dict,
+       Configuration of the method.
+    verbose : boolean, optional (default=False)
+        verbose mode.
+    """
     c_map = method_cfg["mapper"]
     c_i_red = method_cfg["inner_reducer"]
     c_o_red = method_cfg["outer_reducer"]
@@ -83,6 +107,20 @@ def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
 
 
 def save_wf(wf, output_file, mode="soma-workflow"):
+    """Save the workflow in a file.
+
+    Support simple JSON commands list (cmd-list) or soma-workflow.
+
+    Parameters:
+    ----------
+    wf : tuple (cmd-dict, dependancies),
+        Workflow to save.
+    output_file : str,
+        filename for the workflow.
+    mode : str in ["soma-workflow", "cmd_list"],
+           optional (default="soma-workflow")
+        format to save the workflow.
+    """
     cmd = wf[0]
     dep_orig = wf[1]
     if mode == "soma-workflow":
