@@ -6,6 +6,7 @@ Example of dataset and how to load its data.
 """
 from sklearn.datasets import load_iris
 
+
 def get_data(**kwargs):
     """Load data and return a x, y.
 
