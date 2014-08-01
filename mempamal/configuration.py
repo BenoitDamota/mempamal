@@ -79,7 +79,7 @@ def JSONify_estimator(est, est_param,
                       model_selection=True,
                       param_val=None,
                       out=None,
-                      path_to_mr=".",
+                      path_to_mr=None,
                       mapper="mapper.py",
                       i_red="inner_reducer.py",
                       o_red="outer_reducer.py"):
@@ -99,7 +99,7 @@ def JSONify_estimator(est, est_param,
         the est_param.
     out : str, optional (default=None)
         Filename to output the json, if None the json is printed on stdout.
-    path_to_mr : str, optional (default=".", i.e. working directory)
+    path_to_mr : str, optional (default=None, i.e. local mempamal directory)
         Where to find the mapper and reducers scripts.
     mapper : str, optional (default="mapper.py")
         script for the mapper
@@ -107,7 +107,59 @@ def JSONify_estimator(est, est_param,
         script for the inner reducer (for model selection)
     o_red : str, optional (default="outer_reducer.py")
         script for the outer reducer
+
+    Examples:
+    ---------
+    >>> from sklearn.linear_model.logistic import LogisticRegression
+    >>> from sklearn.preprocessing.data import StandardScaler
+    >>> from sklearn.pipeline import Pipeline
+    >>> from mempamal.configuration import JSONify_estimator
+    >>> s1 = StandardScaler(with_mean=True, with_std=False)
+    >>> s2 = LogisticRegression()
+    >>> est = Pipeline([("scaler", s1), ("logit", s2)])
+    >>> JSONify_estimator(est, "logit__C", path_to_mr=".")
+    {
+      "inner_reducer": "./inner_reducer.py",
+      "mapper": "./mapper.py",
+      "steps": [
+        [
+          "scaler",
+          [
+            "sklearn.preprocessing.data.StandardScaler",
+            {
+              "copy": true,
+              "with_mean": true,
+              "with_std": false
+            }
+          ]
+        ],
+        [
+          "logit",
+          [
+            "sklearn.linear_model.logistic.LogisticRegression",
+            {
+              "loss": "lr",
+              "C": 1.0,
+              "verbose": 0,
+              "dual": false,
+              "fit_intercept": true,
+              "penalty": "l2",
+              "multi_class": "ovr",
+              "random_state": null,
+              "tol": 0.0001,
+              "class_weight": null,
+              "intercept_scaling": 1
+            }
+          ]
+        ]
+      ],
+      "outer_reducer": "./outer_reducer.py",
+      "est_param": "logit__C"
+    }
     """
+    if path_to_mr is None:
+        import mempamal
+        path_to_mr = path.join(path.dirname(mempamal.__file__), "scripts")
     # introspection of the estimator
     steps = []
     if est.__class__ is Pipeline:
@@ -127,6 +179,7 @@ def JSONify_estimator(est, est_param,
     conf = {}
     conf["steps"] = steps
     conf["est_param"] = est_param
+    # @TODO: check if est_param is a legit parameter of the Pipeline
     if model_selection is False:
         conf[est_param] = param_val
     conf["mapper"] = path.join(path_to_mr, mapper)
