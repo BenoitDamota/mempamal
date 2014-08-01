@@ -187,6 +187,7 @@ def JSONify_estimator(est, est_param,
     conf["inner_reducer"] = path.join(path_to_mr, i_red)
     conf["outer_reducer"] = path.join(path_to_mr, o_red)
 
+    check_conf(conf, cat="method")
     # output
     if out is not None:
         with open(out, 'w') as fd:
@@ -327,6 +328,7 @@ def JSONify_cv(cv, score_func,
         conf["gridSearch"]["funcMetric"] = [isf, isf_kwargs]
         conf["gridSearch"]["parametersGrid"] = [gf, gf_kwargs]
 
+    check_conf(conf, cat="crossval")
     # output
     if out is not None:
         with open(out, 'w') as fd:

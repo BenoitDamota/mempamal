@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
     name="mempamal",
-    version="0.1.0",
+    version="0.1.1",
     description="MEMPAMAL: Means for EMbarrassingly PArallel MAchine Learning",
     author="Benoit Da Mota",
     author_email="damota.benoit@gmail.com",
