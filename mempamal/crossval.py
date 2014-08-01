@@ -8,18 +8,19 @@ import numpy as np
 
 from .dynamic import dynamic_import
 
+
 def _construct_folds_iterator(y, cfg, key):
     """Dynamically construct a fold iterator from the configuration (cfg, key).
-    
-    Instantiate a folds iterator depending on the cross-validation 
-    configuration. If the folds iterator is statified, it should take the 
+
+    Instantiate a folds iterator depending on the cross-validation
+    configuration. If the folds iterator is statified, it should take the
     targets array y, else it should take only ne number of samples.
 
     Notes
     -----
-    See sklearn.cross_validation for more information about how a 
+    See sklearn.cross_validation for more information about how a
     folds iterator should work
-    
+
     Parameters
     ----------
     y : array, shape (n_samples, n_targets)
@@ -28,8 +29,8 @@ def _construct_folds_iterator(y, cfg, key):
         configuration dict for cross-validation.
     key : str,
         key in cfg that provide a key "foldsIterator" and a list
-        [class, dict] where 'class' is a string representing the 
-        folds iterator object to import and 'dict' are the keywords 
+        [class, dict] where 'class' is a string representing the
+        folds iterator object to import and 'dict' are the keywords
         arguments.
     """
     cv_cfg = cfg[key]
@@ -41,9 +42,10 @@ def _construct_folds_iterator(y, cfg, key):
         fg = dyn_cla(y.shape[0], **kwargs)
     return fg
 
+
 def make_folds(y, cfg, verbose=False):
     """Constructs the folds from crossval configuration
-    
+
     Parameters
     ----------
     y : array, shape (n_samples, n_targets)
@@ -83,6 +85,7 @@ def make_folds(y, cfg, verbose=False):
         folds_dic = dict(zip(keys, folds), n_outer=(i + 1))
     return folds_dic
 
+
 def get_fold(folds, outer, inner=None):
     """Get a given folds from the folds dict (see make_folds)
 
@@ -105,6 +108,7 @@ def get_fold(folds, outer, inner=None):
     except KeyError:
         raise KeyError("unexpected fold: outer={}, inner={}".format(
                 outer, inner))
+
 
 def print_fold(train_index, test_index):
     """Pretty printer for a couple of train/test folds.

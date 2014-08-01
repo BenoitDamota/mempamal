@@ -6,7 +6,6 @@
 Generic mapper
 """
 import json
-import numpy as np
 
 from sklearn.externals import joblib
 from sklearn.pipeline import Pipeline
@@ -36,7 +35,7 @@ if __name__ == "__main__":
         method_cfg = json.load(fd)
 
     # construct folds
-    train_index, test_index = get_fold(dataset["folds"], 
+    train_index, test_index = get_fold(dataset["folds"],
                                        args.outer, inner=args.inner)
     if verbose:
         print_fold(train_index, test_index)
@@ -49,7 +48,7 @@ if __name__ == "__main__":
 
     # construct estimator
     est_kwargs, est_param = construct_pipeline(method_cfg)
-    which_cv = ("gridSearch" if cv_cfg["modelSelection"] 
+    which_cv = ("gridSearch" if cv_cfg["modelSelection"]
                 else "crossval_score")
     score_func, score_kwargs = get_score_func(cv_cfg, cv=which_cv)
     clf = GenericGridSearch(est=Pipeline,
@@ -61,12 +60,12 @@ if __name__ == "__main__":
 
     # fit/predict/score
     clf.fit(X_train, Y_train)
-    Y_pred = clf.predict(X_test)    
+    Y_pred = clf.predict(X_test)
     if verbose:
         print Y_test
         print Y_pred
     scores = clf.score(Y_test, Y_pred)
-    res = ({"scores": scores} if cv_cfg["modelSelection"] 
+    res = ({"scores": scores} if cv_cfg["modelSelection"]
            else {"scores": scores[0]})
 
     # save result

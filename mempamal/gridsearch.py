@@ -5,21 +5,21 @@
 Simple GridSearch for a pipelined estimator (without warm restart).
 """
 import numpy as np
-from sklearn.pipeline import Pipeline
+
 
 class GenericGridSearch(object):
     """Simple GridSearch for a pipelined estimator.
 
+    Note: see sklearn.pipeline.Pipeline
     """
-    
+
     def __init__(self, est, est_param, params, score_func,
-                 est_kwargs=None, 
+                 est_kwargs=None,
                  score_kwargs=None):
         """
 
         Parameters
         ----------
-        
         est : estimator,
             Estimator to jsonify.
         est_param : str,
@@ -58,7 +58,7 @@ class GenericGridSearch(object):
             targets array
         """
         for p in self.params:
-            param_kwargs = {self.est_param : p}
+            param_kwargs = {self.est_param: p}
             steps = self.est_kwargs['steps']
             pipe_steps = []
             for s in steps:
@@ -66,10 +66,10 @@ class GenericGridSearch(object):
                 for k, v in (s[1][1]).iteritems():
                     s_i.__setattr__(k, v)
                 pipe_steps.append((s[0], s_i))
-                    
+
             self.res[p] = self.est(pipe_steps)
             self.res[p].set_params(**param_kwargs)
-            self.res[p].fit(X, y)                
+            self.res[p].fit(X, y)
 
     def predict(self, X):
         """Predict the targets from X for each parameter of the grid

@@ -2,6 +2,7 @@
 #
 # License: BSD 3 clause
 
+
 def dynamic_import(str_import):
     """Take a string representing a python function or class and import it.
 
@@ -13,7 +14,8 @@ def dynamic_import(str_import):
     mod, cla = str_import.rsplit('.', 1)
     dyn_import = getattr(__import__(mod, fromlist=[str(cla)]), cla)
     return dyn_import
-    
+
+
 def _get_step(step):
     """Import class of a given step and return a sklearn.pipeline.Pipeline step
     """
@@ -22,9 +24,10 @@ def _get_step(step):
     name = step[0]
     return (name, (dynamic_import(str_imp), kwargs))
 
+
 def construct_pipeline(cfg):
     """Construct the pipeline steps for sklearn.pipeline.Pipeline.
-    
+
     Construct the pipeline steps for sklearn.pipeline.Pipeline and
     return the steps and the parameter to optimize (e.g. "logit__C" for
     the parameter "C" of the step named "logit").
@@ -41,6 +44,7 @@ def construct_pipeline(cfg):
         pipe.append(_get_step(step))
     return {'steps': pipe}, est_param
 
+
 def get_score_func(cfg, cv="crossval_score"):
     """Import score function and kwargs from the CV configuration.
 
@@ -56,6 +60,7 @@ def get_score_func(cfg, cv="crossval_score"):
     kwargs = cfg[cv]["funcMetric"][1]
     return func, kwargs
 
+
 def load_data(cfg):
     """Load data from the data configuration.
 
@@ -68,6 +73,7 @@ def load_data(cfg):
     dyn_func = dynamic_import(cfg['func'])
     x, y = dyn_func(**kwargs)
     return x, y
+
 
 def get_grid(cfg, x, y):
     """Load the parameters grid from the CV configuration.
@@ -85,4 +91,3 @@ def get_grid(cfg, x, y):
     dyn_func = dynamic_import(cfg["gridSearch"]['parametersGrid'][0])
     grid = dyn_func(x, y, **kwargs)
     return grid
-

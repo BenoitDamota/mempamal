@@ -26,7 +26,7 @@ if __name__ == "__main__":
         print("=======")
         print(args)
         print("=======")
-    
+
     # read files
     dataset = joblib.load(args.dataset)
     with open(args.method, 'r') as fd:
@@ -40,11 +40,11 @@ if __name__ == "__main__":
     grid = dataset["grid"]
     scores = np.zeros((n_inner, n_targets, grid.size))
     for i in range(n_inner):
-         cur_file = (args.__getattribute__("in")).format(inner=i)
-         if verbose:
-             print("Reading {}".format(cur_file))
-         cur_ar = joblib.load(cur_file)
-         scores[i] = cur_ar["scores"]
+        cur_file = (args.__getattribute__("in")).format(inner=i)
+        if verbose:
+            print("Reading {}".format(cur_file))
+        cur_ar = joblib.load(cur_file)
+        scores[i] = cur_ar["scores"]
     if verbose:
         print("=======")
     # Parameter selection:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     score_func, score_kwargs = get_score_func(cv_cfg, cv="gridSearch")
     clf = GenericGridSearch(est=Pipeline,
                             est_param=est_param,
-                            params=[best_param], 
+                            params=[best_param],
                             est_kwargs=est_kwargs,
                             score_func=score_func,
                             score_kwargs=score_kwargs)

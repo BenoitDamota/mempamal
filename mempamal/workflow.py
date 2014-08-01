@@ -7,6 +7,7 @@ Workflow generation.
 import os.path as path
 import numpy as np
 
+
 def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
                     mapper="./scripts/mapper.py",
                     i_red="./scripts/inner_reducer.py",
@@ -16,7 +17,6 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
     in_out_dir = data_cfg["in_out_dir"]
 
     # construct paths
-    data = path.join(in_out_dir, data_cfg["src"])
     cv = path.join(in_out_dir, cv_cfg["src"])
     folds = path.join(in_out_dir, folds_dic["src"])
     method = path.join(in_out_dir, method_cfg["src"])
@@ -28,7 +28,6 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
     # number of folds
     n_o = folds_dic["n_outer"]
     n_i = folds_dic["n_inner"] if cv_cfg["modelSelection"] else None
-        
 
     # a workflow is a collection of commands and dependancies
     all_cmd = {}
@@ -44,7 +43,7 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
         if cv_cfg["modelSelection"]:
             for k in xrange(n_i):
                 cur_cmd = (cmd_mapper +
-                           [m_out.format(inner=k, outer=i), repr(i), 
+                           [m_out.format(inner=k, outer=i), repr(i),
                             "--inner", repr(k)])
                 name = "|----- Map outer={} inner={}".format(i, k)
                 all_cmd[name] = cur_cmd
@@ -73,6 +72,7 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
         print(" ".join(cmd_o_red))
     return all_cmd, dependancies
 
+
 def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
     c_map = method_cfg["mapper"]
     c_i_red = method_cfg["inner_reducer"]
@@ -80,6 +80,7 @@ def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
     return _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
                            mapper=c_map, i_red=c_i_red, o_red=c_o_red,
                            verbose=verbose)
+
 
 def save_wf(wf, output_file, mode="soma-workflow"):
     cmd = wf[0]
@@ -93,7 +94,7 @@ def save_wf(wf, output_file, mode="soma-workflow"):
         workflow = Workflow(jobs=jobs,
                             dependencies=dep)
         Helper.serialize(output_file, workflow)
-    elif mode== "cmd-list":
+    elif mode == "cmd-list":
         import json
         for k, v in cmd.iteritems():
             cmd[k] = " ".join(v)

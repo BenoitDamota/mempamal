@@ -20,7 +20,8 @@ from mempamal.arguments import get_cmd_builder_argparser
 
 verbose = False
 
-if __name__ == "__main__": 
+
+if __name__ == "__main__":
     # parse command line arguments
     args = get_cmd_builder_argparser().parse_args()
     if args.no_warn:
@@ -47,20 +48,20 @@ if __name__ == "__main__":
 
     # step 2: read crossval file
     with open(args.crossval, 'r') as fd:
-            cv_cfg = dict(json.load(fd), 
+            cv_cfg = dict(json.load(fd),
                           src=os.path.basename(args.crossval))
     check_conf(cv_cfg, cat="crossval", verbose=verbose)
 
     # step 3: load method configuration
     with open(args.method, 'r') as fd:
-        method_cfg = dict(json.load(fd), 
+        method_cfg = dict(json.load(fd),
                           src=os.path.basename(args.method))
     check_conf(method_cfg, cat="method", verbose=verbose)
 
     # step 4: write dataset file(s)
     # generate folds/grid and write dataset
     output_file = os.path.join(args.outputdir, "dataset.joblib")
-    folds = dict(make_folds(Y, cv_cfg, verbose=verbose), 
+    folds = dict(make_folds(Y, cv_cfg, verbose=verbose),
                  src=os.path.basename(output_file))
     if cv_cfg["modelSelection"]:
         grid = get_grid(cv_cfg, X, Y)
@@ -68,7 +69,7 @@ if __name__ == "__main__":
         grid = np.asarray([method_cfg[method_cfg["est_param"]]])
     if verbose:
         print("Input dataset destination: {}".format(output_file))
-    dataset = {"X": X, "Y": Y, 
+    dataset = {"X": X, "Y": Y,
                "n_samples": n_samples, "n_targets": n_targets,
                "folds": folds, "grid": grid}
     joblib.dump(dataset, output_file, compress=1)

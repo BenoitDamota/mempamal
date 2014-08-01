@@ -2,7 +2,7 @@
 # Author: Benoit Da Mota <damota.benoit@gmail.com>
 #
 # License: BSD 3 clause
-""" 
+"""
 Generic outer reducer.
 """
 from glob import glob
@@ -23,19 +23,19 @@ if __name__ == "__main__":
         print(args)
         print("=======")
 
-    # retrieve results from (outer) folds  
+    # retrieve results from (outer) folds
     file_pattern = (args.__getattribute__("in")).format(outer="*")
     list_files = glob(file_pattern)
     scores = []
     for cur_file in list_files:
-         if verbose:
-             print("Reading {}".format(cur_file))
-         cur_ar = joblib.load(cur_file)
-         scores.append(cur_ar["scores"])
-    raw =  np.asarray(scores)
+        if verbose:
+            print("Reading {}".format(cur_file))
+        cur_ar = joblib.load(cur_file)
+        scores.append(cur_ar["scores"])
+    raw = np.asarray(scores)
 
     # summary
-    res = {"raw": raw, 
+    res = {"raw": raw,
            "mean": np.mean(raw, axis=0),
            "median": np.median(raw, axis=0),
            "std": np.std(raw, axis=0)}
