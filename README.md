@@ -10,8 +10,8 @@ respond MEmPaMaL and give it a try.
 MEmPaMaL is a Python module for some machine learning workflows built on top of
 Scikit-learn and distributed under the 3-Clause BSD license.
 
-Purpose:
---------
+Purpose
+-------
 
 MEmPaMaL is a set of python helpers to produce and run some 
 embarrassingly parallel machine learning workflows. The goal of
@@ -41,7 +41,7 @@ and targets, an array y of shape (n_samples, n_targets). The goal is
 to construct a predictive model and to measure its goodness of fit on
 unseen data (see examples for more insight).
 
-- **Did you say Big Data?**. MEmPaMaL don't care about this marketing
+- **Did you say Big Data?** MEmPaMaL don't care about this marketing
 term, it just some scripts to help you distribute your computation as
 seamlessly as possible. If your code and computing infrastructure is
 able to perform *Big Data* analysis with simple files and commands, it
@@ -50,21 +50,21 @@ should work but it is NOT the purpose of MEmPaMaL.
 - **Need your knowledge**. You need do understand what you do. For
 instance, most of the times multi-targets are inappropriate for a
 given estimator. Knowing about your data is probably more important 
-than being able to compute mnay models.
+than being able to compute many models.
 
-- **It's not magic!**. You need the computing ressources corresponding
+- **It's not magic!** You need the computing resources corresponding
 to your load then MEmPaMaL can help you to scale out.
 
-- **It's really not magic!**. If your algorithm is not efficient or
+- **It's really not magic!** If your algorithm is not efficient or
 consume too many memory, MEmPaMaL will just help you to run it many
-times in parallel. So, be carreful of the snowball effect and if not
+times in parallel. So, be careful of the snowball effect and if not
 sure, try it at small scale first.
 
-- **It's definitely not magic!**. Some codes are already parallel
+- **It's definitely not magic!** Some codes are already parallel
 (multiprocessing, OpenMP, etc.) and you need to understand the
-implications and take decisions. For instance, you can limit OpenMP to
-1 thread (export OMP_NUM_THREADS=1). In some cases, you would like to
-play with the limits of you system and for that you must deeply
+implications and make choices. For instance, you can limit OpenMP to
+1 thread: ``export OMP_NUM_THREADS=1``. In some cases, you would like to
+play with the limits of your system and for that you must deeply
 understand the underlying technologies and the possibilities of the
 execution back-end.
 
