@@ -15,7 +15,7 @@ setuptools.setup(
     url='https://github.com/BenoitDamota/mempamal',
     packages=["mempamal", "mempamal.datasets", "mempamal.scripts"],
     long_description=open(os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), 'README.md')).read(),
+        os.path.abspath(__file__)), 'README.rst')).read(),
     install_requires=['numpy', 'scikit-learn'],
     classifiers=[
         'Development Status :: 3 - Alpha',
