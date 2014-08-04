@@ -74,7 +74,8 @@ Restrictions
 Examples
 --------
 
-TODO
+a simple example:
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL%20_%20first%20example.ipynb
 
 References
 ----------
