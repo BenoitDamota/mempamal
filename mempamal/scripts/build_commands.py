@@ -9,13 +9,9 @@ import os
 import json
 import warnings
 
-import numpy as np
-import sklearn.externals.joblib as joblib
-
-from mempamal.crossval import make_folds
-from mempamal.configuration import check_conf
+from mempamal.configuration import check_conf, build_dataset
 from mempamal.workflow import create_wf, save_wf
-from mempamal.dynamic import load_data, get_grid
+from mempamal.dynamic import load_data
 from mempamal.arguments import get_cmd_builder_argparser
 
 verbose = False
@@ -39,12 +35,7 @@ if __name__ == "__main__":
             data_cfg = dict(json.load(fd), src=args.data)
     check_conf(data_cfg, cat="data", verbose=verbose)
     X, Y = load_data(data_cfg)
-    n_samples = X.shape[0]
-    n_targets = 1 if (Y.ndim == 1) else Y.shape[1]
-    if n_targets > 1:
-        warnings.warn("More than one target. Unexpected results or crashes "
-                      "may occur if your methods and/or metrics "
-                      "cannot handle multiple target.", RuntimeWarning)
+    in_out_dir = data_cfg["in_out_dir"]
 
     # step 2: read crossval file
     with open(args.crossval, 'r') as fd:
@@ -60,22 +51,12 @@ if __name__ == "__main__":
 
     # step 4: write dataset file(s)
     # generate folds/grid and write dataset
-    output_file = os.path.join(args.outputdir, "dataset.joblib")
-    folds = dict(make_folds(Y, cv_cfg, verbose=verbose),
-                 src=os.path.basename(output_file))
-    if cv_cfg["modelSelection"]:
-        grid = get_grid(cv_cfg, X, Y)
-    else:
-        grid = np.asarray([method_cfg[method_cfg["est_param"]]])
-    if verbose:
-        print("Input dataset destination: {}".format(output_file))
-    dataset = {"X": X, "Y": Y,
-               "n_samples": n_samples, "n_targets": n_targets,
-               "folds": folds, "grid": grid}
-    joblib.dump(dataset, output_file, compress=1)
+    dataset = build_dataset(X, Y, method_cfg, cv_cfg, args.outputdir,
+                            verbose=verbose)
 
     # step 5: construct commands or workflow
-    wf = create_wf(folds, cv_cfg, data_cfg, method_cfg, verbose=verbose)
+    wf = create_wf(dataset['folds'], cv_cfg, method_cfg, in_out_dir,
+                   verbose=verbose)
     wf_out = os.path.join(args.outputdir, "workflow.json")
     save_wf(wf, wf_out, mode=args.output_mode)
     if verbose:

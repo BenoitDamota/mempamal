@@ -6,8 +6,14 @@ Functions relative to configurations.
 """
 import json
 import os.path as path
+import warnings
 
+import numpy as np
+import sklearn.externals.joblib as joblib
 from sklearn.pipeline import Pipeline
+
+from mempamal.dynamic import get_grid
+from mempamal.crossval import make_folds
 
 
 def _check_conf(cfg, req_keys, cat=""):
@@ -76,7 +82,7 @@ def check_conf(cfg, cat="crossval", verbose=False):
 
 
 def JSONify_estimator(est, est_param,
-                      model_selection=True,
+                      model_selection=False,
                       param_val=None,
                       out=None,
                       path_to_mr=None,
@@ -190,6 +196,7 @@ def JSONify_estimator(est, est_param,
     check_conf(conf, cat="method")
     # output
     if out is not None:
+        conf["src"] = path.basename(out)
         with open(out, 'w') as fd:
             json.dump(conf, fd, indent=2)
     return conf
@@ -331,6 +338,34 @@ def JSONify_cv(cv, score_func,
     check_conf(conf, cat="crossval")
     # output
     if out is not None:
+        conf["src"] = path.basename(out)
         with open(out, 'w') as fd:
             json.dump(conf, fd, indent=2)
     return conf
+
+
+def build_dataset(X, y, method_conf, cv_conf,
+                  outputdir=".",
+                  verbose=False):
+    """Write the dataset file.
+    """
+    n_samples = X.shape[0]
+    n_targets = 1 if (y.ndim == 1) else y.shape[1]
+    if n_targets > 1:
+        warnings.warn("More than one target. Unexpected results or crashes "
+                      "may occur if your methods and/or metrics "
+                      "cannot handle multiple targets.", RuntimeWarning)
+    output_file = path.join(outputdir, "dataset.joblib")
+    folds = dict(make_folds(y, cv_conf, verbose=verbose),
+                 src=path.basename(output_file))
+    if cv_conf["modelSelection"]:
+        grid = get_grid(cv_conf, X, y)
+    else:
+        grid = np.asarray([method_conf[method_conf["est_param"]]])
+    if verbose:
+        print("Input dataset destination: {}".format(output_file))
+    dataset = {"X": X, "Y": y,
+               "n_samples": n_samples, "n_targets": n_targets,
+               "folds": folds, "grid": grid}
+    joblib.dump(dataset, output_file, compress=1)
+    return dataset

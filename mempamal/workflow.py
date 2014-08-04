@@ -8,7 +8,7 @@ import os.path as path
 import numpy as np
 
 
-def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
+def _create_generic(folds_dic, cv_cfg, method_cfg, in_out_dir,
                     mapper="./scripts/mapper.py",
                     i_red="./scripts/inner_reducer.py",
                     o_red="./scripts/outer_reducer.py",
@@ -17,9 +17,6 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
 
     Note: internal function (see create_wf)
     """
-    # retrieve I/O directory
-    in_out_dir = data_cfg["in_out_dir"]
-
     # construct paths
     cv = path.join(in_out_dir, cv_cfg["src"])
     folds = path.join(in_out_dir, folds_dic["src"])
@@ -77,7 +74,7 @@ def _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
     return all_cmd, dependancies
 
 
-def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
+def create_wf(folds_dic, cv_cfg, method_cfg, in_out_dir, verbose=False):
     """Create a workflow (list of commands and dependancies).
 
     the list of commands returned is a dictionnary which associates a
@@ -101,7 +98,7 @@ def create_wf(folds_dic, cv_cfg, data_cfg, method_cfg, verbose=False):
     c_map = method_cfg["mapper"]
     c_i_red = method_cfg["inner_reducer"]
     c_o_red = method_cfg["outer_reducer"]
-    return _create_generic(folds_dic, cv_cfg, data_cfg, method_cfg,
+    return _create_generic(folds_dic, cv_cfg, method_cfg, in_out_dir,
                            mapper=c_map, i_red=c_i_red, o_red=c_o_red,
                            verbose=verbose)
 
@@ -129,14 +126,16 @@ def save_wf(wf, output_file, mode="soma-workflow"):
             cmd[k] = Job(command=v, name=k)
         dep = [((cmd[a], cmd[b])) for a, b in dep_orig]
         jobs = np.asarray(cmd.values())[np.argsort(cmd.keys())]
-        workflow = Workflow(jobs=jobs,
+        workflow = Workflow(jobs=jobs.tolist(),
                             dependencies=dep)
         Helper.serialize(output_file, workflow)
+        return workflow
     elif mode == "cmd-list":
         import json
         for k, v in cmd.iteritems():
             cmd[k] = " ".join(v)
         with open(output_file, 'w') as fd:
             json.dump(dict(cmd=cmd, dep=dep_orig), fd, indent=True)
+        return cmd
     else:
         raise TypeError("Invalid workflow mode \'{}\'".format(mode))

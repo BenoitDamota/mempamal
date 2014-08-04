@@ -58,7 +58,7 @@ class GenericGridSearch(object):
             targets array
         """
         for p in self.params:
-            param_kwargs = {self.est_param: p}
+            param_kwargs = {self.est_param: p} if p is not None else {}
             steps = self.est_kwargs['steps']
             pipe_steps = []
             for s in steps:
