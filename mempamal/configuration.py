@@ -8,7 +8,6 @@ import json
 import os.path as path
 import warnings
 
-import numpy as np
 import sklearn.externals.joblib as joblib
 from sklearn.pipeline import Pipeline
 
@@ -54,8 +53,7 @@ def _check_method_conf(cfg):
     """Check the configuration of the data.
 
     """
-    req_keys = ["mapper", "inner_reducer", "outer_reducer", "steps",
-                "est_param"]
+    req_keys = ["mapper", "inner_reducer", "outer_reducer", "steps"]
     _check_conf(cfg, req_keys, cat="method")
 
 
@@ -81,7 +79,7 @@ def check_conf(cfg, cat="crossval", verbose=False):
         print(cfg)
 
 
-def JSONify_estimator(est, est_param,
+def JSONify_estimator(est,
                       model_selection=False,
                       param_val=None,
                       out=None,
@@ -95,8 +93,6 @@ def JSONify_estimator(est, est_param,
     ----------
     est : estimator,
         Estimator to jsonify.
-    est_param : str,
-        Parameter to optimize.
     model_selection : boolean, optional (default=True)
         Do you plan to perform a model selection (optimization of
         hyper-parameters)?
@@ -173,22 +169,18 @@ def JSONify_estimator(est, est_param,
         # if the estimator is a Pipeline, retrieve all steps names,
         # classes and dict
         for n, s in est.steps:
-            t = [repr(s.__class__).split("\'")[1], s.__dict__]
+            t = [repr(s.__class__).split("\'")[1], s.get_params()]
             steps.append([n, t])
     else:
         # else the name of the unique step is the name of the
         # estimator class
         cl = repr(est.__class__).split("\'")[1]
         n = cl.split(".")[-1]
-        steps.append([n, [cl, est.__dict__]])
+        steps.append([n, [cl, est.get_params()]])
 
     # produce a method configuration
     conf = {}
     conf["steps"] = steps
-    conf["est_param"] = est_param
-    # @TODO: check if est_param is a legit parameter of the Pipeline
-    if model_selection is False:
-        conf[est_param] = param_val
     conf["mapper"] = path.join(path_to_mr, mapper)
     conf["inner_reducer"] = path.join(path_to_mr, i_red)
     conf["outer_reducer"] = path.join(path_to_mr, o_red)
@@ -346,7 +338,8 @@ def JSONify_cv(cv, score_func,
 
 def build_dataset(X, y, method_conf, cv_conf,
                   outputdir=".",
-                  verbose=False):
+                  verbose=False,
+                  compress=0):
     """Write the dataset file.
     """
     n_samples = X.shape[0]
@@ -358,14 +351,13 @@ def build_dataset(X, y, method_conf, cv_conf,
     output_file = path.join(outputdir, "dataset.joblib")
     folds = dict(make_folds(y, cv_conf, verbose=verbose),
                  src=path.basename(output_file))
-    if cv_conf["modelSelection"]:
-        grid = get_grid(cv_conf, X, y)
-    else:
-        grid = np.asarray([method_conf[method_conf["est_param"]]])
+
+    grid = (get_grid(cv_conf, X, y) if cv_conf["modelSelection"]
+            else None)
     if verbose:
         print("Input dataset destination: {}".format(output_file))
     dataset = {"X": X, "Y": y,
                "n_samples": n_samples, "n_targets": n_targets,
                "folds": folds, "grid": grid}
-    joblib.dump(dataset, output_file, compress=1)
+    joblib.dump(dataset, output_file, compress=compress)
     return dataset

@@ -13,7 +13,7 @@ class GenericGridSearch(object):
     Note: see sklearn.pipeline.Pipeline
     """
 
-    def __init__(self, est, est_param, params, score_func,
+    def __init__(self, est, params, score_func,
                  est_kwargs=None,
                  score_kwargs=None):
         """
@@ -22,8 +22,6 @@ class GenericGridSearch(object):
         ----------
         est : estimator,
             Estimator to jsonify.
-        est_param : str,
-            Parameter to optimize.
         params : array, shape(n_parameters)
             Grid of parameters
         score_func : func,
@@ -33,8 +31,9 @@ class GenericGridSearch(object):
         score_kwargs : dict, optional (default=None)
             keywords arguments for the scoring function
         """
+        if params is None:
+            params = [None]
         self.params = params
-        self.est_param = est_param
         self.est = est
         self.res = {}
         self.score_func = score_func
@@ -58,7 +57,8 @@ class GenericGridSearch(object):
             targets array
         """
         for p in self.params:
-            param_kwargs = {self.est_param: p} if p is not None else {}
+            param_kwargs = p if p is not None else {}
+            p_ = tuple(p.values()) if p is not None else "None"
             steps = self.est_kwargs['steps']
             pipe_steps = []
             for s in steps:
@@ -67,9 +67,9 @@ class GenericGridSearch(object):
                     s_i.__setattr__(k, v)
                 pipe_steps.append((s[0], s_i))
 
-            self.res[p] = self.est(pipe_steps)
-            self.res[p].set_params(**param_kwargs)
-            self.res[p].fit(X, y)
+            self.res[p_] = self.est(pipe_steps)
+            self.res[p_].set_params(**param_kwargs)
+            self.res[p_].fit(X, y)
 
     def predict(self, X):
         """Predict the targets from X for each parameter of the grid
@@ -81,7 +81,8 @@ class GenericGridSearch(object):
         """
         y_pred = []
         for p in self.params:
-            y_pred.append(self.res[p].predict(X))
+            p_ = tuple(p.values()) if p is not None else "None"
+            y_pred.append(self.res[p_].predict(X))
         return np.asarray(y_pred)
 
     def score(self, y_test, y_pred):

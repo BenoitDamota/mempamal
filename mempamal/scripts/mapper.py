@@ -52,7 +52,6 @@ if __name__ == "__main__":
                 else "crossval_score")
     score_func, score_kwargs = get_score_func(cv_cfg, cv=which_cv)
     clf = GenericGridSearch(est=Pipeline,
-                            est_param=est_param,
                             params=grid,
                             est_kwargs=est_kwargs,
                             score_func=score_func,

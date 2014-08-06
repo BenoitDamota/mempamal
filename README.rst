@@ -74,8 +74,11 @@ Restrictions
 Examples
 --------
 
-a simple example:
+A simple example:
 http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL%20_%20first%20example.ipynb
+
+An example with model selection:
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL%20_%20second%20example.ipynb
 
 References
 ----------

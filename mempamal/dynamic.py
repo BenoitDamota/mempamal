@@ -38,7 +38,10 @@ def construct_pipeline(cfg):
         method configuration describing the steps of an pipelined estimator
     """
     steps = cfg["steps"]
-    est_param = cfg["est_param"]
+    try:
+        est_param = cfg["est_param"]
+    except KeyError:
+        est_param = None
     pipe = []
     for step in steps:
         pipe.append(_get_step(step))

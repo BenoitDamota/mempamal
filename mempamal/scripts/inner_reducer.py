@@ -38,7 +38,7 @@ if __name__ == "__main__":
     n_inner = dataset["folds"]["n_inner"]
     n_targets = dataset["n_targets"]
     grid = dataset["grid"]
-    scores = np.zeros((n_inner, n_targets, grid.size))
+    scores = np.zeros((n_inner, n_targets, len(grid)))
     for i in range(n_inner):
         cur_file = (args.__getattribute__("in")).format(inner=i)
         if verbose:
@@ -51,8 +51,9 @@ if __name__ == "__main__":
     # mean on the folds and target, i.e. select the best parameters
     # independently of the target (that's one possible strategy for
     # multiple targets)
-    ms = np.mean(scores.reshape((-1, grid.size)), axis=0)
-    best_param = grid[ms == np.amax(ms)][0]
+    ms = np.mean(scores.reshape((-1, len(grid))), axis=0)
+    bid = np.where(ms == np.amax(ms))[0]
+    best_param = grid[bid[0]]
 
     # construct folds
     train_index, test_index = get_fold(dataset["folds"], args.outer)
@@ -69,7 +70,6 @@ if __name__ == "__main__":
     est_kwargs, est_param = construct_pipeline(method_cfg)
     score_func, score_kwargs = get_score_func(cv_cfg, cv="gridSearch")
     clf = GenericGridSearch(est=Pipeline,
-                            est_param=est_param,
                             params=[best_param],
                             est_kwargs=est_kwargs,
                             score_func=score_func,
