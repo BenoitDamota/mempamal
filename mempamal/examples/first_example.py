@@ -23,12 +23,12 @@ est = Pipeline(p)
 X, y = iris.get_data()
 
 # jsonify the method and a cross-validation scheme
-method_conf = JSONify_estimator(est, "logit__C", out="./est.json")
+method_conf = JSONify_estimator(est, out="./est.json")
 cv_conf = JSONify_cv(StratifiedKFold, cv_kwargs={"n_folds": 5},
                      score_func=f1_score, stratified=True,
                      out="./cv.json")
 # build the dataset file
-dataset = build_dataset(X, y, method_conf, cv_conf, ".")
+dataset = build_dataset(X, y, method_conf, cv_conf, ".", compress=1)
 
 # create the workflow in the internal representation
 wfi = create_wf(dataset['folds'], cv_conf, method_conf, ".",
