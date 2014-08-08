@@ -62,35 +62,3 @@ def get_score_func(cfg, cv="crossval_score"):
     func = dynamic_import(cfg[cv]["funcMetric"][0])
     kwargs = cfg[cv]["funcMetric"][1]
     return func, kwargs
-
-
-def load_data(cfg):
-    """Load data from the data configuration.
-
-    Parameters
-    ----------
-    cfg : dict,
-        configuration dict for data and I/O.
-    """
-    kwargs = cfg['kwargs']
-    dyn_func = dynamic_import(cfg['func'])
-    x, y = dyn_func(**kwargs)
-    return x, y
-
-
-def get_grid(cfg, x, y):
-    """Load the parameters grid from the CV configuration.
-
-    Parameters
-    ----------
-    cfg : dict,
-        configuration dict for cross-validation.
-    x : array, shape (n_samples, n_features)
-        features array
-    y : array, shape (n_samples, n_targets)
-        targets array
-    """
-    kwargs = cfg["gridSearch"]['parametersGrid'][1]
-    dyn_func = dynamic_import(cfg["gridSearch"]['parametersGrid'][0])
-    grid = dyn_func(x, y, **kwargs)
-    return grid

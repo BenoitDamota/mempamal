@@ -11,7 +11,6 @@ import warnings
 import sklearn.externals.joblib as joblib
 from sklearn.pipeline import Pipeline
 
-from mempamal.dynamic import get_grid
 from mempamal.crossval import make_folds
 
 
@@ -36,7 +35,7 @@ def _check_cv_conf(cfg):
     req_keys = ["foldsIterator", "funcMetric"]
     _check_conf(cfg["crossval_score"], req_keys, cat="crossval")
     if cfg["modelSelection"]:
-        req_keys = ["foldsIterator", "funcMetric", "parametersGrid"]
+        req_keys = ["foldsIterator", "funcMetric"]
         _check_conf(cfg, ["gridSearch"], cat="crossval")
         _check_conf(cfg["gridSearch"], req_keys, cat="crossval")
 
@@ -202,8 +201,6 @@ def JSONify_cv(cv, score_func,
                inner_score_func=None,
                inner_score_func_kwargs=None,
                stratified=False,
-               grid_func=None,
-               grid_func_kwargs=None,
                out=None):
     """Helper function to create a cross-validation configuration
 
@@ -227,10 +224,6 @@ def JSONify_cv(cv, score_func,
         Keywords argument for inner_score_func.
     stratified : boolean, optional (default=False),
         Are the foldsIterators stratified.
-    grid_func : function, optional (default=None),
-        Function to compute a grid of parameters.
-    grid_func_kwargs : dict, optional (default=None),
-        Keywords argument for grid_func.
     out : str, optional (default=None)
         Filename to output the json.
 
@@ -250,8 +243,7 @@ def JSONify_cv(cv, score_func,
                     inner_cv_kwargs={"n_folds": 5},
                     inner_score_func=f1_score,
                     inner_score_func_kwargs={"average": "weighted"},
-                    stratified=True,
-                    grid_func=make_log_grid), indent=2))
+                    stratified=True), indent=2))
 {
   "crossval_score": {
     "funcMetric": [
@@ -271,10 +263,6 @@ def JSONify_cv(cv, score_func,
   "modelSelection": true,
   "stratified": true,
   "gridSearch": {
-    "parametersGrid": [
-      "mempamal.examples.parameters_grid.make_log_grid",
-      {}
-    ],
     "funcMetric": [
       "sklearn.metrics.metrics.f1_score",
       {
@@ -295,9 +283,7 @@ def JSONify_cv(cv, score_func,
     if (inner_cv is not None) and (inner_score_func is None):
         raise TypeError("inner_score_func is None where"
                         " a function is required.")
-    if (inner_cv is not None) and (grid_func is None):
-        raise TypeError("grid_func is None where"
-                        " a function is required.")
+
     modelSelection = False if inner_cv is None else True
     # retrieve crossval_score object
     cv_cl = ".".join([cv.__module__, cv.__name__])
@@ -311,10 +297,6 @@ def JSONify_cv(cv, score_func,
                         inner_score_func.__name__])
         isf_kwargs = ({} if inner_score_func_kwargs is None
                       else inner_score_func_kwargs)
-        gf = ".".join([grid_func.__module__,
-                       grid_func.__name__])
-        gf_kwargs = ({} if grid_func_kwargs is None
-                     else grid_func_kwargs)
     # produce a cv configuration
     conf["modelSelection"] = modelSelection
     conf["stratified"] = stratified
@@ -325,7 +307,6 @@ def JSONify_cv(cv, score_func,
         conf["gridSearch"] = {}
         conf["gridSearch"]["foldsIterator"] = [icv_cl, icv_kwargs]
         conf["gridSearch"]["funcMetric"] = [isf, isf_kwargs]
-        conf["gridSearch"]["parametersGrid"] = [gf, gf_kwargs]
 
     check_conf(conf, cat="crossval")
     # output
@@ -338,6 +319,7 @@ def JSONify_cv(cv, score_func,
 
 def build_dataset(X, y, method_conf, cv_conf,
                   outputdir=".",
+                  grid=None,
                   verbose=False,
                   compress=0):
     """Write the dataset file.
@@ -352,8 +334,6 @@ def build_dataset(X, y, method_conf, cv_conf,
     folds = dict(make_folds(y, cv_conf, verbose=verbose),
                  src=path.basename(output_file))
 
-    grid = (get_grid(cv_conf, X, y) if cv_conf["modelSelection"]
-            else None)
     if verbose:
         print("Input dataset destination: {}".format(output_file))
     dataset = {"X": X, "Y": y,

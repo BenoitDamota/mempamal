@@ -76,37 +76,3 @@ def get_ored_argparser():
     parser.add_argument("-v", "--verbose", help="verbose mode",
                         action="store_true")
     return parser
-
-
-def get_cmd_builder_argparser():
-    """Build command line arguments parser for the commands builder
-
-    Arguments parser for the commands builder workflows.
-    """
-    parser = argparse.ArgumentParser()
-    # data configuration
-    parser.add_argument("data",
-                        help="JSON file to configure data and I/O")
-    # CV configuration
-    parser.add_argument("crossval",
-                        help="JSON file to configure cross validation scheme")
-    # Method configuration
-    parser.add_argument("method",
-                        help="JSON file to configure the method")
-    # local output directory
-    parser.add_argument("outputdir",
-                        help=("Local directory to store the outputs"
-                              " (dataset and configurations)"))
-
-    # output mode {cmd-list, soma-workflow}
-    parser.add_argument("-o", "--output-mode",
-                        choices=["cmd-list", "soma-workflow"],
-                        default="soma-workflow",
-                        help="Output mode")
-    # verbose mode
-    parser.add_argument("-v", "--verbose", help="verbose mode",
-                        action="store_true")
-    # ignore warnings
-    parser.add_argument("--no-warn", help="ignore warnings",
-                        action="store_true")
-    return parser

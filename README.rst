@@ -75,10 +75,13 @@ Examples
 --------
 
 A simple example:
-http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL%20_%20first%20example.ipynb
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_first_example.ipynb
 
 An example with model selection:
-http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL%20_%20second%20example.ipynb
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_second_example.ipynb
+
+A example with ParsimonY (another Python machine learing library):
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_third_example.ipynb
 
 References
 ----------
