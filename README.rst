@@ -21,7 +21,7 @@ MEmPaMaL is to produce a list of commands and dependencies. We state
 that today, commands and files are a very portable and effective
 approach for quick and dirty data exploration or new algorithms
 development. *If your workflow runs on your personal computer but takes
-too many times, MEmPaMal can help you to scale out!*
+too many times, MEmPaMaL can help you to scale out!*
 
 For the machine learning description it relies on the Scikit-learn [1]
 design (pipelines, estimators with fit/predict, transformers with
@@ -38,28 +38,28 @@ Restrictions
 ------------ 
 
 - **Suited for supervised learning**. For a given set of samples we
-  measure features, an array denoted X of shape (n_samples,
+  have features, an array denoted X of shape (n_samples,
   n_features), and targets, an array y of shape (n_samples,
   n_targets). The goal is to construct a predictive model and to
   measure its goodness of fit on unseen data (see examples for more
   insight).
 
-- **Did you say Big Data?** MEmPaMaL don't care about this marketing
-  term, it just some scripts to help you distribute your computation
+- **Did you say Big Data?** MEmPaMaL doesn't care about this marketing
+  term, it is just some scripts to help you distribute your computation
   as seamlessly as possible. If your code and computing infrastructure
-  is able to perform *Big Data* analysis with simple files and
+  are able to perform *Big Data* analysis with simple files and
   commands, it should work but it is NOT the purpose of MEmPaMaL.
 
-- **Need your knowledge**. You need do understand what you do. For
+- **Need your knowledge**. You need to understand what you do. For
   instance, most of the times multi-targets are inappropriate for a
   given estimator. Knowing about your data is probably more important
   than being able to compute many models.
 
 - **It's not magic!** You need the computing resources corresponding
-  to your load then MEmPaMaL can help you to scale out.
+  to your load and then MEmPaMaL can help you to scale out.
 
 - **It's really not magic!** If your algorithm is not efficient or
-  consume too many memory, MEmPaMaL will just help you to run it many
+  consumes too many memory, MEmPaMaL will just help you to run it many
   times in parallel. So, be careful of the snowball effect and if not
   sure, try it at small scale first.
 
@@ -80,7 +80,7 @@ http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/ex
 An example with model selection:
 http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_second_example.ipynb
 
-An example with ParsimonY (another Python machine learing library):
+An example with ParsimonY (another Python machine learning library):
 http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_third_example.ipynb
 
 An example with nested parallelism:
