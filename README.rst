@@ -80,8 +80,11 @@ http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/ex
 An example with model selection:
 http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_second_example.ipynb
 
-A example with ParsimonY (another Python machine learing library):
+An example with ParsimonY (another Python machine learing library):
 http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_third_example.ipynb
+
+An example with nested parallelism:
+http://nbviewer.ipython.org/github/BenoitDamota/mempamal/blob/master/mempamal/examples/MEmPaMaL_fourth_example.ipynb
 
 References
 ----------
