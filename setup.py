@@ -13,7 +13,8 @@ setuptools.setup(
     author_email="damota.benoit@gmail.com",
     license='BSD 3-clause',
     url='https://github.com/BenoitDamota/mempamal',
-    packages=["mempamal", "mempamal.datasets", "mempamal.examples"],
+    packages=["mempamal", "mempamal.datasets", "mempamal.examples",
+              "mempamal.scripts"],
     long_description=open(os.path.join(os.path.dirname(
         os.path.abspath(__file__)), 'README.rst')).read(),
     install_requires=['numpy', 'scikit-learn'],
